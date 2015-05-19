@@ -1,0 +1,58 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 30 Apr, 2015, 5:33:57 PM
+    Author     : shankaranand
+*/
+.mycustom_on{display:block; position: relative;margin-bottom:15px;}
+.mycustom_off{display:none;}
+.delete{cursor:pointer;}
+.upload-file-container{
+    padding-bottom: 10px;
+}
+.upload-file-container label,.upload-link label{
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    padding-bottom: 8px;
+}
+.upload-thumb{
+   /* background: #efefef;*/
+    padding: 0;
+    margin: 0 0 15px 0;
+    text-align: center;
+}
+.upload-thumb img.uploaded_img{width:100%;}
+.upload-thumb img.delete{margin-left:90%;}
+.upload-thumb img{
+    float: none;
+    display: inline-block;
+    margin:0;
+    height:auto;
+    /*padding: 10px;*/
+}
+.upload-link label{
+    display: block;
+    padding-bottom: 10px;
+}
+.upload-link input{
+    width: 100%;
+}
+/*.upload_image_button{
+    position: absolute;
+    top: -5px;
+    right: 0;
+}*/
+.miw-loop{list-style:none;}
+.miw-container-loop-last{
+    border-bottom:2px solid #000;
+}
+.miw-odd{
+  background:rgba(194, 197, 98, 0.2);
+}
+.miw-even{
+    background:rgba(105, 88, 116, 0.2);
+}
