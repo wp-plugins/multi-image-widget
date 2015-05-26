@@ -119,14 +119,23 @@ class miw_image_widget extends WP_Widget {
 
             $fieldarr = unserialize(MIW_FIELD_OPTION_ARR);
             if (count($fieldarr)) {
-                foreach ($fieldarr as $field) {
-                    $widgetname = $field;
+                for($fi=0;$fi < count($fieldarr);$fi++) {
+                    $widgetname = $fieldarr[$fi];
 
                     /*                     * ************** Get value from database */
-                    $imgURL = $instance["image_" . $widgetname];
+					$imgURL ="";
+					$link   ="";
+					$target ="";
+					
+					if(isset($instance["image_" . $widgetname]))
+                        $imgURL = $instance["image_" . $widgetname];
+					
+					if(isset($instance["link_" . $widgetname]))
                     $link = $instance["link_" . $widgetname];
+					
+					if(isset($instance["target_" . $widgetname]))
                     $target = $instance["target_" . $widgetname];
-                    /*                     * ************** Get value from database END */
+                    /*************** Get value from database END */
                     /*
                      * Next uploaded button
                      * Functionality of selecting image.
@@ -139,10 +148,11 @@ class miw_image_widget extends WP_Widget {
                     if (empty($imgURL) AND empty($nxt_upload_btn_addmore)) {
                         $nxt_upload_btn_addmore = $fieldarr[$inc_nxtbtn];
                     }
-                    $inc_nxtbtn = $inc_nxtbtn + 1; //increment
-                    $nxt_upload_btn = $fieldarr[$inc_nxtbtn];
+//                    $inc_nxtbtn = intval($inc_nxtbtn) + 1; //increment
+                        $next_inc = intval($fi) + 1;
+                    $nxt_upload_btn = @$fieldarr[$next_inc];
                     ?>   
-                    <!-- Loop start here -->
+                    <!-- Loop start here -->     
                     <div class="miw-container">
                         <!--
                         1: Now first button is on and rest will off.
