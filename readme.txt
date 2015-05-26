@@ -11,13 +11,13 @@ Multi image widget is used to upload the multiple image.
 
 This plugin is used for upload the image. It has two unique feature in one.
 
-* You can upload multiple image and display in linear form.
-* You can upload the multiple image and display in slider.
-* You can upload the single image also.
+1: Linear View * You can upload multiple image and display in linear form.
+2: Slider View * You can upload the multiple image and display in slider.
 
 It will provide the widget and you can use it in widget module.
 
 For more information,you can visit the <a href="http://roomrent.org/my-developed-plugins/multi-image-widget/">plugin Page</a>
+Note: Anyone can write the CSS for my plugin,I will added it. 
 == Installation ==
 
 1. Upload `multi-image-widget` to the `/wp-content/plugins/` directory
