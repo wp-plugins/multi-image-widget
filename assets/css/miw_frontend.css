@@ -16,6 +16,6 @@ and open the template in the editor.
 }
 
 .miw-loop{
-    cursor: pointer;
+    list-style:none;
     margin-bottom: 7px;
 }
