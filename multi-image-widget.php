@@ -2,11 +2,11 @@
 
 /*
  * Plugin Name:Multi image widget
- * Plugin URI: #
+ * Plugin URI:http://roomrent.org/my-developed-plugins/multi-image-widget/
  * Description:This plugin have the feature for upload the multiple image via widget.
  * Author:shankaranand12
- * Version: 1.0
- * Author URI: #
+ * Version: 1.1
+ * Author URI:http://roomrent.org/
  * Text-domain:miw
  */
 
@@ -23,6 +23,7 @@ define('MIW__PLUGIN_DIR', plugin_dir_path(__FILE__));
  * Define constant
  */
 define("MIW_TOTAL_UPLOAD_FIELD_OPTION",10);//counting will start from 1.
+define("MIW_FIELD_OPTION_ARR",serialize(array("miw_1","miw_2","miw_3","miw_4","miw_5","miw_6","miw_7","miw_8","miw_9","miw_10")));
 define("MIW_UPLOAD_OPTION_PREFIX","miw_");
 
 /*
@@ -33,7 +34,7 @@ add_action('wp_enqueue_scripts', 'miw_frontend_enqueue_scripts');
 
 function miw_enqueue_scripts() {
     wp_enqueue_media();
-
+    wp_enqueue_script("jquery");
     wp_enqueue_style("miw_customcss", MIW__PLUGIN_URL . "assets/css/miw_admin.css");
     wp_enqueue_script("miw_custom", MIW__PLUGIN_URL . "assets/js/miw_custom.js", array('jquery'), '', TRUE);
     //jssor slider for adding the slider
