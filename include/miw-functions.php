@@ -20,31 +20,19 @@ class miw_functions {
          * MIW_TOTAL_UPLOAD_FIELD_OPTION : start from 1
          * MIW_UPLOAD_OPTION_PREFIX      : Add the prefix
          */
-        $total_field = MIW_TOTAL_UPLOAD_FIELD_OPTION;
-        $prefix_opt = MIW_UPLOAD_OPTION_PREFIX;
-
-
+        
         ob_start();
         $output = "";
         $inc = 1;
-        if ($total_field > 0) {
-            for ($i = 1; $i <= $total_field; $i++) {
+        $fieldarr = unserialize(MIW_FIELD_OPTION_ARR); //print_r($instance);
+        if (count($fieldarr)) {
+            foreach ($fieldarr as $field) {
+                $widgetname = $field;
 
-                $name = $prefix_opt . $i; //widget name
-                
-                $imgURL = "";
-                if (isset($instance[$name])) {
-                    $imgURL = $instance[$name];
-                }
-                $linkImage = "";
-                if (isset($instance["link_" . $name])) {
-                    $linkImage = $instance["link_" . $name];
-                }
-
-                $linkTarget = "";
-                if (isset($instance["target_" . $name])) {
-                    $linkTarget = $instance["target_" . $name];
-                }
+                /*                 * ************** Get value from database */
+                $imgURL = $instance["image_" . $widgetname];
+                $linkImage = $instance["link_" . $widgetname];
+                $linkTarget = $instance["target_" . $widgetname];
 
 
                 if (!empty($imgURL)) {
