@@ -43,7 +43,7 @@ class miw_image_widget extends WP_Widget {
 
         if ($widget_type == "slider") {
             ?>
-            <div id="owl-demo" class="owl-carousel owl-theme"> 
+            <div id="owl-demo" class="owl-carousel owl-theme miw-slider"> 
                 <?php
                 echo $objFun->miw_generate_list_loop($instance, "div");
                 ?>
@@ -56,8 +56,8 @@ class miw_image_widget extends WP_Widget {
             Email me : shankranand.mca@gmail.com : subject: Multi image upload plugin
             -->   
             <div class="miw-container">
-                <ul class="miw">
-                    <?php
+                <ul class="miw miw-linear">
+                    <?php 
                     echo $objFun->miw_generate_list_loop($instance, "li");
                     ?>
                 </ul>    
@@ -92,99 +92,106 @@ class miw_image_widget extends WP_Widget {
             <p>
                 <label for="<?php echo $this->get_field_id('widget_type'); ?>"><?php _e('Widget Type:'); ?></label> 
                 <select class="widefat" id="<?php echo $this->get_field_id('widget_type'); ?>" name="<?php echo $this->get_field_name('widget_type'); ?>">
-                    <option value="linear" <?php echo ($widget_type == "linear") ? "selected" : ""; ?> ><?php echo __( 'Linear Image', 'miw' );?></option>
-                    <option value="slider" <?php echo ($widget_type == "slider") ? "selected" : ""; ?> ><?php echo __( 'Slider Image', 'miw' );?></option>
+                    <option value="linear" <?php echo ($widget_type == "linear") ? "selected" : ""; ?> ><?php echo __('Linear Image', 'miw'); ?></option>
+                    <option value="slider" <?php echo ($widget_type == "slider") ? "selected" : ""; ?> ><?php echo __('Slider Image', 'miw'); ?></option>
                 </select>    
             </p> 
 
-            <p><?php echo __( 'You can upload maximum 10 image', 'miw' );?></p>
-           <!--
-           Current running value of the : Next uploaded value , current uploaded value.
-           -->
-           <input type="hidden" class="miw_current_running_value" data-current="" data-next="" value="1">
+            <p><?php echo __('You can upload maximum 10 image', 'miw'); ?></p>
+
             <?php
             /*
-             * Get total upload field option and show the 1st field option. 
-             * Remaining will be shown when click on "Add More " button.
-             * MIW_TOTAL_UPLOAD_FIELD_OPTION : start from 1
-             * MIW_UPLOAD_OPTION_PREFIX      : Add the prefix
+             * Variable description.
+             * $inc : it is used to identify the first field.
+             * $fieldarr = it is used to know,how many options.
+             * $widgetid = it is used to identify the widget id i.e widget number.
+             * $next_uploaded_btn = it is used to show the next uploaded button when click on the "Add More" button.
              */
-            $total_field = MIW_TOTAL_UPLOAD_FIELD_OPTION;
-            $prefix_opt = MIW_UPLOAD_OPTION_PREFIX;
-            /*
-             * To know how many images are uploaded.so that when click on "Add More" button then new upload field will be visible.
-             */
-            $add_more = "";
 
-            if ($total_field > 0) {
-                for ($i = 1; $i <= $total_field; $i++) {
-                    $widget_name = $prefix_opt . $i; //widget name
-                    $widget_name_next = $prefix_opt . "" . ($i + 1);
+            $nxt_upload_btn = "";
+            $nxt_upload_btn_addmore = "";
+
+            $widgetid = $this->id;
+            $inc = 1;
+
+
+            $inc_nxtbtn = 0; //$i is used to show  the next value .
+
+            $fieldarr = unserialize(MIW_FIELD_OPTION_ARR);
+            if (count($fieldarr)) {
+                foreach ($fieldarr as $field) {
+                    $widgetname = $field;
+
+                    /*                     * ************** Get value from database */
+                    $imgURL = $instance["image_" . $widgetname];
+                    $link = $instance["link_" . $widgetname];
+                    $target = $instance["target_" . $widgetname];
+                    /*                     * ************** Get value from database END */
                     /*
-                     * widget value from db
+                     * Next uploaded button
+                     * Functionality of selecting image.
+                     *        Currently:              2:  [Upload button] 
+                     *                  1:     [AddMore] /----\3: [Nextbutton once doneUploadbutton] 
+                     * Note: Add more(1) have the next uploaded(3) button record.
+                     *       Next uploaded button have the nextuploaded button(3) record.
                      */
-                    $imgURL = "";
-                    if (isset($instance[$widget_name])) {
-                        $imgURL = $instance[$widget_name];
 
-                        if (empty($imgURL) AND $add_more == "") {
-                            $add_more = $widget_name;
-                        }
+                    if (empty($imgURL) AND empty($nxt_upload_btn_addmore)) {
+                        $nxt_upload_btn_addmore = $fieldarr[$inc_nxtbtn];
                     }
-                    //link of the image
-                    $linkImg = "";
-                    if (isset($instance["link_" . $widget_name])) {
-                        $linkImg = $instance["link_" . $widget_name];
-                    }
-                    //open in windows.
-                    $linktarget = "_self";
-                    if (isset($instance["target_" . $widget_name])) {
-                        $linktarget = $instance["target_" . $widget_name];
-                    }
-                    ?>
-                    <div class="miw-<?php echo ($i % 2 == 0) ? "even" : "odd"; ?>">
+                    $inc_nxtbtn = $inc_nxtbtn + 1; //increment
+                    $nxt_upload_btn = $fieldarr[$inc_nxtbtn];
+                    ?>   
+                    <!-- Loop start here -->
+                    <div class="miw-container">
                         <!--
-                        Feature : 1st image is everything on so that anyone can upload the image . 
-                        For adding more image, you need to click on "Add More" button.
+                        1: Now first button is on and rest will off.
+                        2: Suppose two button have upload the image then next 3rd button in on and other is off . Same as viceversa. 
+                        3: When click on Add more then we will show the div whose class (upload_btn-widgetidwidgetname) .
                         -->
+                        <!-- upload button  -->
+                        <div class="upload-file-container  <?php echo ($inc == 1|| !empty($imgURL) ) ? 'miw_on' : 'miw_off'; ?> upload_btn-<?php echo $widgetid . $widgetname; ?> " >
+                            <input data-next_uploadedbtn="<?php echo $nxt_upload_btn; ?>" data-widgetid="<?php echo $widgetid; ?>" data-widgetname="<?php echo $widgetname; ?>" type="button" class="miw_upload_image button-primary button" value="Upload image">
+                        </div>   
+                        <!-- upload image,link and target  -->
+                        <div class="miw-button-attribute <?php echo $widgetid . $widgetname; ?> <?php echo (!empty($imgURL)) ? "miw_on" : "miw_off"; ?> ">
 
-                        <div data-nextval="<?php echo $widget_name_next; ?>" class="upload-file-container upload-button-<?php echo $widget_name;
-                echo (empty($imgURL) AND $i != 1) ? ' mycustom_off' : ' mycustom_on'; ?> ">
-                            <!-- <label for="<?php echo $this->get_field_id($widget_name); ?>"><?php _e('Upload File'); ?></label>  -->
-                            <input data-nextval="<?php echo $widget_name_next; ?>" class="upload_image_button  button button-primary widget-control-save" name="<?php echo $widget_name; ?>"  type="button" value="Select an Image <?php echo $i; ?>" />
-                        </div> 
+                            <div class="miw-image">
+                                <figure class="upload-thumb">
+                                <!--
+                                How to identify the image
+                                1: widget id + widgetname => complete key.
+                                --> 
+                                <img src="<?php echo $imgURL; ?>" class="uploaded_img <?php echo $widgetid . $widgetname; ?>" alt="image"  />
+                                <img class="delete" data-val="<?php echo $widgetid.$widgetname; ?>" src="<?php echo MIW__PLUGIN_URL; ?>assets/images/Delete.png" alt="delete" />
+                                <input class="<?php echo $widgetid . $widgetname; ?>" type="hidden" name='<?php echo $this->get_field_name("image_" . $widgetname); ?>' id='<?php echo $this->get_field_id("image_" . $widgetname); ?>'  value="<?php echo $imgURL; ?>">
+                                </figure> 
+                            </div> 
 
+                            <div class="miw-link upload-link">
+                                <label for="<?php echo $this->get_field_id("link_" . $widgetname); ?>"><?php _e('Link'); ?></label> 
+                                <input type="url" name='<?php echo $this->get_field_name("link_" . $widgetname); ?>' id='<?php echo $this->get_field_id("link_" . $widgetname); ?>'  value="<?php echo $link; ?>">
+                            </div> 
 
-                        <div class="field-options-<?php echo $widget_name;
-                echo (empty($imgURL)) ? ' mycustom_off' : ' mycustom_on'; ?>">  
-                            <figure class="upload-thumb">
-                                <img src="<?php echo $imgURL; ?>" class="uploaded_img <?php echo $widget_name; ?>" />
-                                <img class="delete del-<?php echo $widget_name; ?>" data-val="<?php echo $widget_name; ?>" src="<?php echo MIW__PLUGIN_URL; ?>assets/images/Delete.png" alt="delete" />
-                                <input type="hidden" name="<?php echo $this->get_field_name($widget_name); ?>" class="<?php echo $widget_name; ?>" id="<?php echo $this->get_field_id($widget_name); ?>" value="<?php echo $imgURL; ?>" />
-                            </figure>
-                            <!-- Link of this image  --> 
-                            <div class="upload-link upload-link-<?php echo $widget_name; ?>">
-                                <label for="<?php echo $this->get_field_id("link_" . $widget_name); ?>"><?php _e('Link'); ?></label> 
-                                <input type="url" name="<?php echo $this->get_field_name("link_" . $widget_name); ?>" id="<?php echo $this->get_field_id("link_" . $widget_name); ?>" value="<?php echo $linkImg; ?>" />
-                            </div>
-
-                            <!-- open in tab  --> 
-                            <div class="miw-container-loop-last upload-link upload-link-<?php echo $widget_name; ?>">
-                                <label for="<?php echo $this->get_field_id("target_" . $widget_name); ?>"><?php _e('Target Link'); ?></label> 
-                                <select class="widefat open-in-link" name="<?php echo $this->get_field_name("target_" . $widget_name); ?>" id="<?php echo $this->get_field_id("target_" . $widget_name); ?>">
-                                    <option value="_self" <?php echo ($linktarget == "_self") ? "selected" : ""; ?>  ><?php echo __( 'Stay in Window', 'miw' );?></option>
-                                    <option value="_blank" <?php echo ($linktarget == "_blank") ? "selected" : ""; ?> ><?php echo __( 'Open New Window', 'miw' );?></option>
-                                </select>
-                            </div>
+                            <div class="miw-target miw-container-loop-last upload-link">
+                               <label for="<?php echo $this->get_field_id("target_".$widgetname); ?>"><?php _e('Target Link'); ?></label>   
+                                <select class="widefat open-in-link" name='<?php echo $this->get_field_name("target_" . $widgetname); ?>' id='<?php echo $this->get_field_id("target_" . $widgetname); ?>'>
+                                    <option value="_self" <?php echo ($target == "_self") ? "selected='selected'" : ""; ?> >Open in same window</option>
+                                    <option value="_target" <?php echo ($target == "_target") ? "selected='selected'" : ""; ?> >Opne in new window</option>
+                                </select>    
+                            </div> 
 
                         </div>
-
-                    </div>
+                        <!-- upload image,link and target END  -->
+                    </div>    
+                    <!-- Loop END here -->
                     <?php
-                }//end for loop.
-            }//count condition > 0 
+                    ++$inc;
+                }
+            }
             ?>
-            <a href="javascript:void(0);" class="addmore button button-primary" data-val="<?php echo $add_more; ?>" ><?php echo __( 'Add More.', 'miw' );?></a>   
+            <a href="javascript:void(0);" class="button miw_addmore" data-widgetid="<?php echo $widgetid; ?>" data-nextbtn="<?php echo $nxt_upload_btn_addmore; ?>" >Add More</a>  
+
         </div>   
         <?php
     }
@@ -197,18 +204,16 @@ class miw_image_widget extends WP_Widget {
         /*
          * other values
          */
-        $total_field = MIW_TOTAL_UPLOAD_FIELD_OPTION;
-        $prefix_opt = MIW_UPLOAD_OPTION_PREFIX;
-
-        if ($total_field > 0) {
-            for ($i = 1; $i <= $total_field; $i++) {
-                $widget_name = $prefix_opt . $i; //widget name
-
-                $instance[$widget_name] = (!empty($new_instance[$widget_name]) ) ? $new_instance[$widget_name] : '';
-                $instance['link_' . $widget_name] = (!empty($new_instance['link_' . $widget_name]) ) ? $new_instance['link_' . $widget_name] : '';
-                $instance['target_' . $widget_name] = (!empty($new_instance['target_' . $widget_name]) ) ? $new_instance['target_' . $widget_name] : '';
+        $fieldarr = unserialize(MIW_FIELD_OPTION_ARR);
+        if (count($fieldarr)) {
+            foreach ($fieldarr as $field) {
+                $widgetname = $field;
+                $instance["image_" . $widgetname] = (!empty($new_instance["image_" . $widgetname]) ) ? $new_instance["image_" . $widgetname] : '';
+                $instance["link_" . $widgetname] = (!empty($new_instance["link_" . $widgetname]) ) ? $new_instance["link_" . $widgetname] : '';
+                $instance["target_" . $widgetname] = (!empty($new_instance["target_" . $widgetname]) ) ? $new_instance["target_" . $widgetname] : '';
             }
         }
+
         return $instance;
     }
 
@@ -219,4 +224,5 @@ class miw_image_widget extends WP_Widget {
 function miw_initialize_widget() {
     register_widget('miw_image_widget');
 }
+
 add_action('widgets_init', 'miw_initialize_widget');
