@@ -16,7 +16,7 @@ This plugin is used for upload the image. It has two unique feature in one.
 
 It will provide the widget and you can use it in widget module.
 
-For more information,you can visit the <a href="http://roomrent.org/my-developed-plugins/multi-image-widget/">plugin Page</a>
+For more information,you can visit the <a href="https://shankaranandmaurya.wordpress.com/my-developed-plugin/multi-image-widget/">plugin Page</a>
 Note: Anyone can write the CSS for my plugin,I will added it. 
 == Installation ==
 
@@ -26,4 +26,4 @@ Note: Anyone can write the CSS for my plugin,I will added it.
 
 == Screenshots ==
 
-For more information,you can visit the <a href="http://roomrent.org/my-developed-plugins/multi-image-widget/">plugin Page</a>
+For more information,you can visit the <a href="https://shankaranandmaurya.wordpress.com/my-developed-plugin/multi-image-widget/">plugin Page</a>
